@@ -1,25 +1,19 @@
 import os
 
-def check_number(n):
-    while n < 1 or n > 6:
-        n = int(input("Error, this number is invalid! Enter a number from 1 to 6\n"
-                      "1. Add\n"
-                      "2. Delete\n"
-                      "3. Change\n"
-                      "4. Search\n"
-                      "5. Display\n"
-                      "6. Exit\n"
-                      "Enter the number of the command: "))
+def check_number(n, max_value):
+    while n < 1 or n > max_value:
+        n = int(input(f"Error, this number is invalid! Enter a number from 1 to {max_value}\n"
+                      "Enter the number: "))
     return n
 
 def add_row():
     name = input("Enter name: ")
     surname = input("Enter surname: ")
+    patronymic = input("Enter patronymic: ")
     phone_number = input("Enter phone number: ")
-    comment = input("Enter comment: ")
     
     with open("phonebook.txt", "a") as file:
-        file.write(f"{name},{surname},{phone_number},{comment}\n")
+        file.write(f"{name},{surname},{patronymic},{phone_number}\n")
     print("Record added successfully!")
 
 def delete_row():
@@ -62,6 +56,21 @@ def search_row():
             if search_term in line:
                 print(line.strip())
 
+def copy_row():
+    source_file_path = input("Enter the source file path (e.g., source.txt): ")
+    destination_file_path = input("Enter the destination file path (e.g., destination.txt): ")
+    line_number = int(input("Enter the line number to copy: "))
+
+    with open(source_file_path, "r") as source_file:
+        lines = source_file.readlines()
+
+        if 1 <= line_number <= len(lines):
+            with open(destination_file_path, "a") as destination_file:
+                destination_file.write(lines[line_number - 1])
+            print("Record copied successfully!")
+        else:
+            print("Invalid line number.")
+
 def print_file():
     with open("phonebook.txt", "r") as file:
         for line in file:
@@ -69,16 +78,17 @@ def print_file():
 
 def start_menu():
     command = None
-    while command != 6:
+    while command != 7:
         command = int(input("Greetings!!\n"
                             "1. Add\n"
                             "2. Delete\n"
                             "3. Change\n"
                             "4. Search\n"
-                            "5. Display\n"
-                            "6. Exit\n"
+                            "5. Copy\n"
+                            "6. Display\n"
+                            "7. Exit\n"
                             "Enter the number of the command: "))
-        command = check_number(command)
+        command = check_number(command, 7)
         if command == 1:
             add_row()
         elif command == 2:
@@ -88,6 +98,8 @@ def start_menu():
         elif command == 4:
             search_row()
         elif command == 5:
+            copy_row()
+        elif command == 6:
             print_file()
     print("Goodbye, I will be glad to see you again!\n")
 
